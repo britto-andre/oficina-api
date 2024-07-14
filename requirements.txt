@@ -1,7 +1,6 @@
 pydantic
 pydantic-settings
-# pika
-# pymongo
 fastapi
-# fastapi-keycloak-middleware
 uvicorn
+pyrebase4
+firebase_admin
