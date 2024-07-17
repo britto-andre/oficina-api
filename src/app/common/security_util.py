@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from typing import Annotated
 
-from src.app.common.utils.logger import logger
+from src.app.common.logger import logger
 from src.app.common.common_settings import CommonSettings
 
 security = HTTPBearer()
@@ -30,16 +30,18 @@ class SecurityConfig:
 
     def __init__(self):
         self.settings = CommonSettings()
-        self.firebase = pyrebase.initialize_app({
+        firebase_props = {
             "apiKey": self.settings.firebase_apiKey,
             "authDomain": self.settings.firebase_authDomain,
             "databaseURL": self.settings.firebase_databaseURL,
             "storageBucket": self.settings.firebase_storageBucket,
-        })
+        }
+        self.firebase = pyrebase.initialize_app(firebase_props)
         firebase_admin.initialize_app(credentials.Certificate(self.settings.FIREBASE_CONFIG))
+
         logger.info(f'Firebase App {firebase_admin.get_app().project_id} iniciado.')
-        logger.info(f'Create SecurityConfig with Domain {self.settings.firebase_authDomain}')
-        
+        logger.info(f'Create SecurityConfig with authDomain {self.settings.firebase_authDomain}')
+
     def getToken(self, email, password):
          user = self.firebase.auth().sign_in_with_email_and_password(email, password)
          logger.info(f'User getToken {user['email']}')

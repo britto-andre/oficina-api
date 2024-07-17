@@ -5,11 +5,10 @@ from pydantic import BaseModel, BeforeValidator, Field
 PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class DefaultEntity (BaseModel):
-    id: Optional[PyObjectId] = Field(alias='_id', default=None)
+    id: Optional[PyObjectId] = Field(default=None)
     
     excluded: bool = Field(default=None)
     created_time: datetime = Field(default=None)
-    # created_user: str = Field(default=None)
     
     version: int = Field(default=None)
 

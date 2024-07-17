@@ -1,7 +1,7 @@
-from fastapi import Depends, APIRouter, HTTPException, Body, status, Request
+from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
-from src.app.common.security.security_util import SecurityConfig, active_user
+from src.app.common.security_util import SecurityConfig, active_user
 
 router = APIRouter()
 service = SecurityConfig()

@@ -1,4 +1,4 @@
-from src.app.common.utils.logger import logger
+from src.app.common.logger import logger
 # from src.app.common.service.default_service import DefaultService
 from src.app.entity.servico import Servico
 # from src.app.service_example.repository.example_repository import ExampleRepository
