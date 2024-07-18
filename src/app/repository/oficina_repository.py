@@ -9,7 +9,6 @@ class OficinaRepository(DefaultRepository):
     
     def _return_one(self, result:list):
         if not result: return None
-        print(result[0].to_dict())
         return Oficina(**result[0].to_dict())
 
     def create(self, obj: Oficina):
@@ -18,8 +17,8 @@ class OficinaRepository(DefaultRepository):
         
     def find_one_by_email(self, email):
         result = super().find(self._collection, 'email','==', email)
-        self._return_one(result)
+        return self._return_one(result)
     
     def find_one_by_codigo(self, codigo):
         result = super().find(self._collection, 'codigo','==', codigo)
-        self._return_one(result)
+        return self._return_one(result)
