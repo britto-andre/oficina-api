@@ -15,13 +15,13 @@ class OficinaCreate(BaseModel):
 async def create(user: Annotated[dict, Depends(active_user)], 
                  body: OficinaCreate = Body(...)):
     obj = Oficina(**{'nome':body.nome, 'email':user['email']})
-    id = service.create(obj)
+    id = service.create(obj, user['email'])
     if not id: 
         raise HTTPException(
            status_code=status.HTTP_400_BAD_REQUEST,
            detail={'message': 'Usuário já possui oficina cadastrada.'})
     
-    return {'message': 'Servico Criado', '_id': str(id)}
+    return {'message': 'Oficina Criada', '_id': str(id)}
 
 @router.get('/')
 async def find(user: Annotated[dict, Depends(active_user)]):

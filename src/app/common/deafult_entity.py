@@ -6,10 +6,8 @@ PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class DefaultEntity (BaseModel):
     id: Optional[PyObjectId] = Field(default=None)
-    
     excluded: bool = Field(default=None)
     created_time: datetime = Field(default=None)
-    
     version: int = Field(default=None)
 
     def model_post_init(self, *args, **kwargs):

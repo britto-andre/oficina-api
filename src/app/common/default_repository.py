@@ -1,7 +1,6 @@
 import uuid
 from firebase_admin import firestore
 from google.cloud.firestore_v1.base_query import FieldFilter
-from src.app.common.deafult_entity import DefaultEntity
 
 class DefaultRepository:
 
@@ -11,7 +10,7 @@ class DefaultRepository:
     def client(self) -> firestore.Client:
         return self.db
     
-    def create(self, collection:str, obj:DefaultEntity):
+    def create(self, collection:str, obj):
         id = str(uuid.uuid4())
         obj.id = id
         self.db.collection(collection).document(id).set(obj.model_dump())
