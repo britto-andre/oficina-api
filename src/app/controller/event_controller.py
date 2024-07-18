@@ -6,7 +6,7 @@ from src.app.service.event_service import EventService
 router = APIRouter()
 service = EventService()
 
-@router.get('/{oficina}/{aggregate_type}/{aggregate_id}')
-async def list_by_aggregate(oficina:str, aggregate_type: str, aggregate_id: str):
-        list = service.list_by_aggregate(oficina, aggregate_type, aggregate_id)
+@router.get('/{aggregate_type}/{aggregate_id}')
+async def list_by_aggregate(aggregate_type: str, aggregate_id: str, user: Annotated[dict, Depends(active_user)]):
+        list = service.list_by_aggregate(user['oficina'], aggregate_type, aggregate_id)
         return {'list': list}

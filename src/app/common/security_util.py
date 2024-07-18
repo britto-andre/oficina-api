@@ -1,7 +1,7 @@
 import pyrebase
 import firebase_admin
 from firebase_admin import credentials, auth
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Header
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from typing import Annotated
 
@@ -10,10 +10,11 @@ from src.app.common.common_settings import CommonSettings
 
 security = HTTPBearer()
 
-async def token_required(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def token_required(x_oficina: Annotated[str, Header()], credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
         token = credentials.credentials
         user = auth.verify_id_token(token)
+        user['oficina'] = x_oficina
         return user
     except Exception as e:
         logger.warn(f'Auth Erro {e}')
