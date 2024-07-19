@@ -16,5 +16,11 @@ class DefaultRepository:
         self.db.collection(collection).document(id).set(obj.model_dump())
         return id
     
+    def list(self, collection: str):
+        return self.db.collection(collection).get()
+    
     def find(self, collection: str, field: str, op: str, value: any):
         return self.db.collection(collection).where(filter=FieldFilter(field, op, value)).get()
+    
+    def findOne(self, collection: str, id: str):
+        return self.db.collection(collection).document(id).get()
