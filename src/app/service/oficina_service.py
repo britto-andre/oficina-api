@@ -1,4 +1,3 @@
-from src.app.common.logger import logger
 from src.app.common.default_service import DefaultService
 from src.app.entity.oficina import Oficina
 from src.app.repository.oficina_repository import OficinaRepository
@@ -28,10 +27,8 @@ class OficinaService(DefaultService):
         oficina = self.repository.find_one_by_email(obj.email)
         if not oficina:
             obj.codigo = self._build_codigo(obj.nome)
-            # TODO - Atualizar o código da oficina no usuário para compor as seções
-
             obj_id = self.repository.create(obj)
-            self.save_event(obj_id, obj, 'oficina_created', user, obj.codigo)
+            self.save_event(obj_id, obj, 'oficina_criada', user, obj.codigo)
             return obj_id
         else:
             return None
