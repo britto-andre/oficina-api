@@ -17,4 +17,4 @@ class EventRepository(DefaultRepository):
         query = query.where(filter=FieldFilter('aggregate_type', '==', aggregate_type))
         query = query.where(filter=FieldFilter('aggregate_id', '==', aggregate_id))
         results = query.get()
-        return list(map(lambda r: Event(**r.to_dict()), results))    
+        return list(map(lambda r: Event(**r.to_dict()), results))

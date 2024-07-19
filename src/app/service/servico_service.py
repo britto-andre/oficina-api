@@ -1,36 +1,23 @@
-from src.app.common.logger import logger
-# from src.app.common.service.default_service import DefaultService
 from src.app.entity.servico import Servico
-# from src.app.service_example.repository.example_repository import ExampleRepository
+from src.app.common.default_service import DefaultService
+from src.app.repository.servico_repository import ServicoRepository
 
-class ServicoService():
+class ServicoService(DefaultService):
 
-    # def __init__(self) -> None:
-        # super().__init__()
-        # self.repository = ExampleRepository()
+    def __init__(self) -> None:
+        super().__init__()
+        self.repository = ServicoRepository()
 
-    def create(self, obj: Servico):
-        obj_id = 123456 #self.repository.create(obj)
-        logger.info(f'Objeto: {obj}.')
-        logger.info(f'Servico Created with _id {obj_id}.')
-        # self.publisher.publish(obj_id, obj, 'example_created')
+    def create(self, oficina_cod, user, obj: Servico):
+        obj_id = self.repository.create(oficina_cod, obj)
+        self.save_event(obj_id, obj, 'servico_criado', user, oficina_cod)
         return obj_id
 
-    def list(self):
-        return [
-            Servico(_id=123456, nome='Troca de óleo', valor=239.78),
-            Servico(_id=54321, nome='Troca de retrovisor', valor=45.62),
-            Servico(_id=3423, nome='Calibrar step', valor=3.00)
-        ]
-    # self.repository.find_by_example({})
+    def list(self, oficina_cod):
+        return self.repository.list(oficina_cod)
     
-    def find_one_by_id(self, id):
-        return Servico(_id=id, nome='Troca de óleo', valor=239.78)
-        # return self.repository.find_one_by_id(id)
-
-    # def update_name(self, id: str, name: str):
-    #     logger.info(f'update_name -> id: {id}, name: {name}')
-
+    def find_one_by_id(self, oficina_cod, id):
+        return self.repository.find_one_by_id(oficina_cod, id)
     
     # def request_delete(self, id: str):
     #     obj = self.repository.find_one_by_id(id)
