@@ -16,6 +16,9 @@ class DefaultRepository:
         self.db.collection(collection).document(id).set(obj.model_dump())
         return id
     
+    def update(self, collection:str, id, payload):
+        self.db.collection(collection).document(id).update(payload)
+    
     def list(self, collection: str):
         return self.db.collection(collection).get()
     
