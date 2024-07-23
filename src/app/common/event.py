@@ -19,12 +19,22 @@ class Event (BaseModel):
 
 class EventBuilder:
 
+    def build_classname(self, payload_id, payload_class, payload, event_name, user) -> Event:
+        return Event(
+            event_name = event_name,
+            aggregate_id = str(payload_id),
+            aggregate_type = camel_to_snake(payload_class),
+            payload = payload,
+            created_time = datetime.now(),
+            created_user = user,
+        )
+
     def build(self, payload_id, payload, event_name, user) -> Event:
         return Event(
-            event_name=event_name,
-            aggregate_id=str(payload_id),
-            aggregate_type=camel_to_snake(payload.__class__.__name__),
-            payload=payload.model_dump(by_alias=True, exclude=["id"]),
-            created_time=datetime.now(),
-            created_user=user,
+            event_name = event_name,
+            aggregate_id = str(payload_id),
+            aggregate_type = camel_to_snake(payload.__class__.__name__),
+            payload = payload.model_dump(by_alias=True, exclude=["id"]),
+            created_time = datetime.now(),
+            created_user = user,
         )
