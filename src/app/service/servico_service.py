@@ -13,6 +13,11 @@ class ServicoService(DefaultService):
         self.save_event(obj_id, obj, 'servico_criado', user, oficina_cod)
         return obj_id
 
+    def atualizar_nome(self, oficina_cod, user, id, nome):
+        payload = {"nome": nome}
+        self.repository.update(oficina_cod, id, payload)
+        self.save_event_classname(id, Servico.__name__, payload, 'servico_nome_atualizado', user, oficina_cod)
+
     def list(self, oficina_cod):
         return self.repository.list(oficina_cod)
     

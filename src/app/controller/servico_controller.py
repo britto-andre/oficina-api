@@ -12,12 +12,24 @@ class ServicoCreate(BaseModel):
     nome: str
     valor: float
 
+class ServicoAtualizarNome(BaseModel):
+    nome: str
+
+class ServicoAtualizarValor(BaseModel):
+    valor: float
+
 @router.post('/')
 async def create(user: Annotated[dict, Depends(active_user)],
                  body: ServicoCreate = Body(...)):
     obj = Servico(**body.model_dump())
     id = service.create(user['oficina'], user['email'], obj)
-    return {'message': 'Servico Criado', '_id': str(id)}
+    return {'message': 'Serviço Criado', '_id': str(id)}
+
+@router.post('/{id}/alterar_nome')
+async def create(user: Annotated[dict, Depends(active_user)], id,
+                 body: ServicoAtualizarNome = Body(...)):
+    service.atualizar_nome(user['oficina'], user['email'], id, body.nome)
+    return {'message': 'Nome do Serviço Atualizao', '_id': str(id)}
 
 @router.get('/{id}')
 async def find_on_by_id(user: Annotated[dict, Depends(active_user)], id):
