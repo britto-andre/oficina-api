@@ -11,8 +11,9 @@ class PecaRepository(DefaultRepository):
         inserted_id = super().create(f'{oficina_cod}_{self._collection}', obj)
         return inserted_id
     
+    def update(self, oficina_cod, id, payload):
+        super().update(f'{oficina_cod}_{self._collection}', id, payload)
+    
     def list(self, oficina_cod):
         results = super().list(f'{oficina_cod}_{self._collection}')
         return list(map(lambda r: Peca(**r.to_dict()), results))
-    
-    # TO-DO: Atualização da oficina
