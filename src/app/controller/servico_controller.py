@@ -8,28 +8,34 @@ from src.app.entity.servico import Servico
 router = APIRouter()
 service = ServicoService()
 
-class ServicoCreate(BaseModel):
+class ServicoCriar(BaseModel):
     nome: str
     valor: float
 
-class ServicoAtualizarNome(BaseModel):
+class ServicoAlterarNome(BaseModel):
     nome: str
 
-class ServicoAtualizarValor(BaseModel):
+class ServicoAlterarValor(BaseModel):
     valor: float
 
 @router.post('/')
 async def create(user: Annotated[dict, Depends(active_user)],
-                 body: ServicoCreate = Body(...)):
+                 body: ServicoCriar = Body(...)):
     obj = Servico(**body.model_dump())
     id = service.create(user['oficina'], user['email'], obj)
     return {'message': 'Serviço Criado', '_id': str(id)}
 
 @router.post('/{id}/alterar_nome')
-async def create(user: Annotated[dict, Depends(active_user)], id,
-                 body: ServicoAtualizarNome = Body(...)):
-    service.atualizar_nome(user['oficina'], user['email'], id, body.nome)
-    return {'message': 'Nome do Serviço Atualizao', '_id': str(id)}
+async def alterar_nome(user: Annotated[dict, Depends(active_user)], id,
+                 body: ServicoAlterarNome = Body(...)):
+    service.alterar_nome(user['oficina'], user['email'], id, body.nome)
+    return {'message': 'Nome do Serviço Atualizado', '_id': str(id)}
+
+@router.post('/{id}/alterar_valor')
+async def alterar_valor(user: Annotated[dict, Depends(active_user)], id,
+                 body: ServicoAlterarValor = Body(...)):
+    service.alterar_valor(user['oficina'], user['email'], id, body.valor)
+    return {'message': 'Valor do Serviço Atualizado', '_id': str(id)}
 
 @router.get('/{id}')
 async def find_on_by_id(user: Annotated[dict, Depends(active_user)], id):
