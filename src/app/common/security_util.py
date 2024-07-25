@@ -10,21 +10,30 @@ from src.app.common.common_settings import CommonSettings
 
 security = HTTPBearer()
 
-async def token_required(x_oficina: Annotated[str, Header()], credentials: HTTPAuthorizationCredentials = Depends(security)):
+def verify_user(credentials: HTTPAuthorizationCredentials):
     try:
         token = credentials.credentials
         user = auth.verify_id_token(token)
-        user['oficina'] = x_oficina
         return user
     except Exception as e:
         logger.warn(f'Auth Erro {e}')
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário não logado ou sessão inválida.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+            headers={"WWW-Authenticate": "Bearer"})
 
-async def active_user(user: Annotated[dict, Depends(token_required)]):
+async def token_required(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    return verify_user(credentials)
+
+async def active_user_only(user: Annotated[dict, Depends(token_required)]):
+    return user
+
+async def token_required_oficina(x_oficina: Annotated[str, Header()], credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = verify_user(credentials)
+    user['oficina'] = x_oficina
+    return user
+    
+async def active_user(user: Annotated[dict, Depends(token_required_oficina)]):
     return user
 
 class SecurityConfig:
