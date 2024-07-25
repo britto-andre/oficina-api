@@ -17,6 +17,7 @@ class DefaultRepository:
         return id
     
     def update(self, collection:str, id, payload):
+        payload['version'] = firestore.Increment(1)
         self.db.collection(collection).document(id).update(payload)
     
     def list(self, collection: str):
