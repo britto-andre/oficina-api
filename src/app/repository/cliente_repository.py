@@ -22,3 +22,8 @@ class ClienteRepository(DefaultRepository):
         result = super().find(f'{oficina_cod}_{self._collection}', 'telefone','==', telefone)
         if not result: return None
         return Cliente(**result[0].to_dict())
+    
+    def find_one_by_id(self, oficina_cod, id):
+        result = super().findOne(f'{oficina_cod}_{self._collection}', id)
+        if not result.to_dict(): return None
+        return Cliente(**result.to_dict())
