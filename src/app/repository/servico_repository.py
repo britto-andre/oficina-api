@@ -20,4 +20,5 @@ class ServicoRepository(DefaultRepository):
     
     def find_one_by_id(self, oficina_cod, codigo):
         result = super().findOne(f'{oficina_cod}_{self._collection}', codigo)
+        if not result.to_dict(): return None
         return Servico(**result.to_dict())
