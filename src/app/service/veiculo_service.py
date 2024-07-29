@@ -1,4 +1,3 @@
-import re
 from src.app.entity.veiculo import Veiculo
 from src.app.common.default_service import DefaultService
 from src.app.repository.veiculo_repository import VeiculoRepository
