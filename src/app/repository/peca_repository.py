@@ -17,3 +17,8 @@ class PecaRepository(DefaultRepository):
     def list(self, oficina_cod):
         results = super().list(f'{oficina_cod}_{self._collection}')
         return list(map(lambda r: Peca(**r.to_dict()), results))
+
+    def find_one_by_id(self, oficina_cod, id):
+        result = super().findOne(f'{oficina_cod}_{self._collection}', id)
+        if not result.to_dict(): return None
+        return Peca(**result.to_dict())

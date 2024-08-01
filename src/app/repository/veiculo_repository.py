@@ -26,3 +26,8 @@ class VeiculoRepository(DefaultRepository):
         result = super().find(f'{oficina_cod}_{self._collection}', 'placa','==', placa)
         if not result: return None
         return Veiculo(**result[0].to_dict())
+    
+    def find_one_by_id(self, oficina_cod, id):
+        result = super().findOne(f'{oficina_cod}_{self._collection}', id)
+        if not result.to_dict(): return None
+        return Veiculo(**result.to_dict())
