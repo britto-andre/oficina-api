@@ -19,6 +19,7 @@ class OrcamentoCriar(BaseModel):
 class OrcamentoItemAtualizar(BaseModel):
     tipo: str
     tipo_id: str
+    quantidade: float
     valor: float
 
 @router.post('/')

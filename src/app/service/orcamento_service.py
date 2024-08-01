@@ -2,6 +2,7 @@ from src.app.entity.orcamento import Orcamento
 from src.app.common.default_service import DefaultService
 from src.app.repository.orcamento_repository import OrcamentoRepository
 from src.app.repository.veiculo_repository import VeiculoRepository
+from src.app.repository.cliente_repository import ClienteRepository
 from src.app.repository.peca_repository import PecaRepository
 from src.app.repository.servico_repository import ServicoRepository
 
@@ -16,6 +17,7 @@ class OrcamentoService(DefaultService):
         super().__init__()
         self.repository = OrcamentoRepository()
         self.veiculo_repository = VeiculoRepository()
+        self.cliente_repository = ClienteRepository()
         self.peca_repository = PecaRepository()
         self.servico_repository = ServicoRepository()
     
@@ -38,7 +40,7 @@ class OrcamentoService(DefaultService):
     def create(self, oficina_cod, user, obj: Orcamento):
         self._checkVeiculoExiste(oficina_cod, obj.veiculo_id)
         self._checkItensExiste(oficina_cod, obj.itens)
-
+        obj.situacao = 'novo'
         obj_id = self.repository.create(oficina_cod, obj)
         self.save_event(obj_id, obj, 'orcamento_criado', user, oficina_cod)
         return obj_id
@@ -48,14 +50,21 @@ class OrcamentoService(DefaultService):
     
     def find_one_by_id(self, oficina_cod, id):
         orcamento =  self.repository.find_one_by_id(oficina_cod, id)
-        # Carregar o veículo
-        # Carregar o cliente
-        # Carregar os itens
+        if orcamento:
+            orcamento.veiculo = self.veiculo_repository.find_one_by_id(oficina_cod, orcamento.veiculo_id)
+            orcamento.cliente = self.cliente_repository.find_one_by_id(oficina_cod, orcamento.veiculo.cliente_id)
+
+            for item in orcamento.itens:
+                if item['tipo'] == 'peca':
+                    item['peca'] = self.peca_repository.find_one_by_id(oficina_cod, item['tipo_id'])
+                else:
+                    item['servico'] = self.servico_repository.find_one_by_id(oficina_cod, item['tipo_id'])
+
         return orcamento
     
 # TO-DO: Add endpoints
-# - Criar orçamento
-# - Carregar orçamento - com todas as dependências
+# - Criar orçamento - DONE
+# - Carregar orçamento - com todas as dependências - DONE
 # - Atualizar itens do orçamento
 # - Postergar validade
 # - FInalizar orçamento

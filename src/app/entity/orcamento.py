@@ -7,13 +7,15 @@ from src.app.entity.servico import Servico
 class OrcamentoItem (BaseModel):
     tipo: str
     tipo_id: str
+    quantidade: float
     valor: float
-    peca: Peca = Field(default=None)
-    servico: Servico = Field(default=None)
+    peca: object = Field(default=None)
+    servico: object = Field(default=None)
 
 class Orcamento (DefaultEntity):
     veiculo_id: str
-    veiculo: Veiculo = Field(default=None)
+    veiculo: object = Field(default=None)
+    cliente: object = Field(default=None)
     observacao: str
     condicao_pgto: str
     telefone_cliente: str
