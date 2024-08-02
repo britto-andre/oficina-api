@@ -62,10 +62,23 @@ class OrcamentoService(DefaultService):
 
         return orcamento
     
-# TO-DO: Add endpoints
-# - Criar orçamento - DONE
-# - Carregar orçamento - com todas as dependências - DONE
-# - Atualizar itens do orçamento
-# - Postergar validade
-# - FInalizar orçamento
-# - cancelar orçamento
+    def atualizar_itens(self, oficina_cod, user, id, itens):
+        self._checkItensExiste(oficina_cod, itens)
+        payload = {"itens": list(map(lambda r: r.model_dump(), itens)), "situacao": "atualizado"}
+        self.repository.update(oficina_cod, id, payload)
+        self.save_event_classname(id, Orcamento.__name__, payload, 'orcamento_itens_atualizado', user, oficina_cod)
+    
+    def postergar(self, oficina_cod, user, id, validade_dias):
+        payload = {"validade_dias": validade_dias, "situacao": "atualizado"}
+        self.repository.update(oficina_cod, id, payload)
+        self.save_event_classname(id, Orcamento.__name__, payload, 'orcamento_postergado', user, oficina_cod)
+    
+    def cancelar(self, oficina_cod, user, id):
+        payload = {"situacao": "cancelado"}
+        self.repository.update(oficina_cod, id, payload)
+        self.save_event_classname(id, Orcamento.__name__, payload, 'orcamento_cancelado', user, oficina_cod)
+
+    def finalizar(self, oficina_cod, user, id):
+        payload = {"situacao": "finalizado"}
+        self.repository.update(oficina_cod, id, payload)
+        self.save_event_classname(id, Orcamento.__name__, payload, 'orcamento_finalizado', user, oficina_cod)

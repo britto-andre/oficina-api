@@ -16,11 +16,8 @@ class OrcamentoCriar(BaseModel):
     validade_dias: int
     itens: list
 
-class OrcamentoItemAtualizar(BaseModel):
-    tipo: str
-    tipo_id: str
-    quantidade: float
-    valor: float
+class OrcamentoItemAtualizar(BaseModel): itens: list
+class OrcamentoPostergar(BaseModel): validade_dias: int
 
 @router.post('/')
 async def create(user: Annotated[dict, Depends(active_user)],
@@ -55,10 +52,37 @@ async def list(user: Annotated[dict, Depends(active_user)]):
 async def find_on_by_id(user: Annotated[dict, Depends(active_user)], id):
     return service.find_one_by_id(user['oficina'], id)
 
-# TO-DO: Add endpoints
-# - Criar orçamento
-# - Carregar orçamento
-# - Atualizar itens do orçamento
-# - Postergar validade
-# - FInalizar orçamento
-# - cancelar orçamento
+@router.post('/{id}/atualizar_itens')
+async def update_itens(user: Annotated[dict, Depends(active_user)], id,
+                 body: OrcamentoItemAtualizar = Body(...)):
+    try:
+        itens = []
+        for item in body.itens:
+            itens.append(OrcamentoItem(**item))
+        service.atualizar_itens(user['oficina'], user['email'], id, itens)
+        return {'message': 'Itens do Orçamento Atualizados', '_id': str(id)}
+    except ServicoNaoExisteException:
+        raise HTTPException(
+           status_code=status.HTTP_400_BAD_REQUEST, detail={'message': 'Serviço não existe.'})
+    except PecaNaoExisteException:
+        raise HTTPException(
+           status_code=status.HTTP_400_BAD_REQUEST, detail={'message': 'Peça não existe.'})
+    except ItensVazioException:
+        raise HTTPException(
+           status_code=status.HTTP_400_BAD_REQUEST, detail={'message': 'Lista de itens não pode ser vazia.'})
+
+@router.post('/{id}/postergar')
+async def postergar(user: Annotated[dict, Depends(active_user)], id,
+                 body: OrcamentoPostergar = Body(...)):
+    service.postergar(user['oficina'], user['email'], id, body.validade_dias)
+    return {'message': 'Orçamento Postergado', '_id': str(id)}
+
+@router.post('/{id}/cancelar')
+async def cancelar(user: Annotated[dict, Depends(active_user)], id):
+    service.cancelar(user['oficina'], user['email'], id)
+    return {'message': 'Orçamento Cancelado', '_id': str(id)}
+
+@router.post('/{id}/finalizar')
+async def finalizar(user: Annotated[dict, Depends(active_user)], id):
+    service.finalizar(user['oficina'], user['email'], id)
+    return {'message': 'Orçamento Cancelado', '_id': str(id)}
